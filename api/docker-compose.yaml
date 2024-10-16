@@ -8,8 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app  # Mapeia o diretório do projeto local para o contêiner
-      - /root/.m2:/root/.m2  # Cache das dependências Maven
+      - .:/app  # Mapeia o diretório do projeto local para o contêiner # Cache das dependências Maven
     environment:
       - MAVEN_OPTS=-Dspring-boot.run.profiles=dev
     command: mvn spring-boot:run

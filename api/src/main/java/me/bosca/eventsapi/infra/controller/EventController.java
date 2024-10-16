@@ -4,6 +4,7 @@ package me.bosca.eventsapi.infra.controller;
 import jakarta.validation.Valid;
 import me.bosca.eventsapi.core.domain.contract.EventUseCase;
 import me.bosca.eventsapi.core.domain.entity.Event;
+import me.bosca.eventsapi.core.domain.entity.Person;
 import me.bosca.eventsapi.core.dto.EventInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,5 +69,17 @@ public class EventController {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/event/{eventID}/person/{personID}")
+    void addPerson(@PathVariable int eventID, @PathVariable int personID) {
+        eventUseCase.addPerson(eventID, personID);
+    }
+
+    @GetMapping("/event/{eventID}/person")
+    List<Person> fetchPeople(@PathVariable int eventID) {
+        return eventUseCase.fetchPeople(eventID);
+    }
+
+
 }
 

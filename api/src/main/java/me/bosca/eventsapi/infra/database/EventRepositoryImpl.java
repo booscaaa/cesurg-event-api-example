@@ -2,8 +2,10 @@ package me.bosca.eventsapi.infra.database;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import me.bosca.eventsapi.core.domain.contract.EventRepository;
 import me.bosca.eventsapi.core.domain.entity.Event;
+import me.bosca.eventsapi.core.domain.entity.Person;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -53,4 +55,33 @@ public class EventRepositoryImpl implements EventRepository {
                 .setParameter("id", id)
                 .getSingleResult();
     }
+
+    @Transactional
+    @Override
+    public void addPerson(int eventID, int personID) {
+        var query = """
+            INSERT INTO event_person (person_id, event_id) 
+            VALUES (:personID, :eventID);
+            """;
+
+        entityManager.createNativeQuery(query, Event.class)
+                .setParameter("personID", personID)
+                .setParameter("eventID", eventID)
+                .executeUpdate();
+    }
+
+    @Override
+    public List<Person> fetchPeople(int eventID) {
+        var query = """
+           SELECT p.id, p.name FROM event_person ep
+           INNER JOIN person p ON p.id = ep.person_id
+           WHERE event_id = :eventID;
+           """;
+
+        return (List<Person>) entityManager.createNativeQuery(query, Person.class)
+                .setParameter("eventID", eventID)
+                .getResultList();
+    }
+
+
 }
