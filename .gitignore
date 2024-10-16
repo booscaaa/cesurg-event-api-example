@@ -34,3 +34,7 @@ build/
 
 
 .env
+
+docs/node_modules
+docs/package-lock.json
+docs/tsp-output
