@@ -1,12 +1,19 @@
-# Etapa 1: Imagem base para build
 FROM maven:3.9.9-eclipse-temurin-23 AS builder
 
-# Definir o diretório de trabalho
 WORKDIR /app
 
-# Copiar o arquivo pom.xml e baixar as dependências
-COPY pom.xml ./
+COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Comando para rodar a aplicação com hot reload
-CMD ["mvn", "compile", "spring-boot:run"]
+COPY src ./src
+RUN mvn clean package -DskipTests -X
+
+FROM openjdk:23-jdk-slim
+
+WORKDIR /app
+
+COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
