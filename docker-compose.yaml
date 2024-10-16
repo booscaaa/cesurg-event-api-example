@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - .:/app  # Mapeia o diretório do projeto local para o contêiner
+      - /root/.m2:/root/.m2  # Cache das dependências Maven
+    environment:
+      - MAVEN_OPTS=-Dspring-boot.run.profiles=dev
+    command: mvn spring-boot:run
